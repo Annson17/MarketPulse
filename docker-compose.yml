@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres:15
+
+    container_name: marketpulse-postgres
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: marketpulse
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - marketpulse-network
+
+    restart: unless-stopped
+
+  redis:
+
+    image: redis:alpine
+
+    container_name: marketpulse-redis
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+    command:
+      redis-server
+      --appendonly yes
+      --requirepass redis_password
+
+    networks:
+      - marketpulse-network
+
+    restart: unless-stopped
+
+
+volumes:
+
+  postgres_data:
+
+  redis_data:
+
+
+networks:
+
+  marketpulse-network:
+
+    driver: bridge
